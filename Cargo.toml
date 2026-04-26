@@ -1,0 +1,16 @@
+[package]
+name = "gpui-demo"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+objc2 = { version = "0.5.2", features = ["std"] }
+objc2-foundation = { version = "0.2.2", features = ["std", "NSGeometry", "NSObject", "NSThread"] }
+objc2-app-kit = { version = "0.2.2", features = ["std", "NSApplication", "NSWindow", "NSView", "NSEvent", "NSResponder", "NSColor", "NSColorSpace", "NSRunningApplication", "NSGraphics", "NSTrackingArea"] }
+objc2-metal = { version = "0.2.2", features = ["std", "MTLDevice", "MTLCommandQueue", "MTLRenderPass", "MTLRenderCommandEncoder"] }
+objc2-quartz-core = { version = "0.2.2", features = ["std", "CAMetalLayer", "CALayer"] }
+metal = "0.29.0"
+core-graphics = "0.23.2"
+block2 = "0.5.1"
+dispatch = "0.2.0"
+taffy = "=0.9.0"
