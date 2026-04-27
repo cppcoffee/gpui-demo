@@ -34,7 +34,7 @@ use crate::geometry::{Bounds, Point, Size};
 use crate::label::Label;
 use crate::layout::LayoutEngine;
 use crate::renderer::MetalRenderer;
-use crate::scene::{Quad, Scene};
+use crate::scene::Scene;
 use crate::style::Styled;
 
 declare_class!(
@@ -339,7 +339,42 @@ impl MetalView {
             .size(180.0, 44.0)
             .rounded(8.0);
 
+        // Add button as child
         root = root.child(button);
+
+        // Add FPS overlay as child
+        let fps_overlay = Div::new()
+            .absolute()
+            .top(10.0)
+            .left(10.0)
+            .size(104.0, 26.0)
+            .bg(Hsla {
+                h: 0.0,
+                s: 0.0,
+                l: 0.03,
+                a: 0.58,
+            })
+            .border(1.0)
+            .border_color(Hsla {
+                h: 0.0,
+                s: 0.0,
+                l: 0.35,
+                a: 0.45,
+            })
+            .rounded(5.0)
+            .child(
+                Label::new(format!("{fps} FPS"))
+                    .font_size(14.0)
+                    .text_color(Hsla {
+                        h: 0.0,
+                        s: 0.0,
+                        l: 0.92,
+                        a: 1.0,
+                    })
+                    .px(8.0)
+                    .py(4.0),
+            );
+        root = root.child(fps_overlay);
 
         // Phase 1: request_layout
         let mut layout_engine = LayoutEngine::new();
@@ -366,7 +401,6 @@ impl MetalView {
         scene.clear();
         let interaction = ivars.interaction.lock().unwrap();
         root.paint(root_bounds, &mut scene, &interaction, &layout_engine);
-        Self::paint_fps_overlay(fps, &mut scene, &interaction, &mut layout_engine);
 
         // Phase 4: finish
         scene.finish();
@@ -387,63 +421,6 @@ impl MetalView {
 
         let mut renderer = ivars.renderer.lock().unwrap();
         renderer.draw(&scene, drawable, (viewport_width, viewport_height));
-    }
-
-    fn paint_fps_overlay(
-        fps: u32,
-        scene: &mut Scene,
-        interaction: &InteractionState,
-        layout_engine: &mut LayoutEngine,
-    ) {
-        let background_bounds = Bounds {
-            origin: Point { x: 10.0, y: 10.0 },
-            size: Size {
-                width: 104.0,
-                height: 26.0,
-            },
-        };
-
-        scene.push_quad(Quad {
-            order: 0,
-            bounds: background_bounds,
-            background: Hsla {
-                h: 0.0,
-                s: 0.0,
-                l: 0.03,
-                a: 0.58,
-            },
-            border_color: Hsla {
-                h: 0.0,
-                s: 0.0,
-                l: 0.35,
-                a: 0.45,
-            },
-            corner_radii: crate::geometry::Corners::uniform(5.0),
-            border_widths: crate::geometry::Edges::uniform(1.0),
-        });
-
-        let label_bounds = Bounds {
-            origin: Point { x: 18.0, y: 14.0 },
-            size: Size {
-                width: 88.0,
-                height: 18.0,
-            },
-        };
-
-        let mut fps_label = Label::new(format!("{fps} FPS"))
-            .font_size(14.0)
-            .text_color(Hsla {
-                h: 0.0,
-                s: 0.0,
-                l: 0.92,
-                a: 1.0,
-            })
-            .size(label_bounds.size.width, label_bounds.size.height);
-        let label_layout_id = fps_label.request_layout(layout_engine);
-        layout_engine.compute(label_layout_id, label_bounds.size);
-        let mut computed_label_bounds = layout_engine.bounds(label_layout_id);
-        computed_label_bounds.origin = label_bounds.origin;
-        fps_label.paint(computed_label_bounds, scene, interaction, layout_engine);
     }
 }
 

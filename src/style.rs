@@ -13,6 +13,13 @@ pub enum Display {
     None,
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub enum Position {
+    #[default]
+    Relative,
+    Absolute,
+}
+
 /// Mirrors gpui::FlexDirection — main axis direction
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub enum FlexDirection {
@@ -48,6 +55,7 @@ pub enum JustifyContent {
 #[derive(Clone, Debug)]
 pub struct Style {
     pub display: Display,
+    pub position: Position,
     pub flex_direction: FlexDirection,
     pub size: Size,
     pub min_size: Size,
@@ -56,6 +64,7 @@ pub struct Style {
     pub padding: Edges,
     pub border_widths: Edges,
     pub corner_radii: Corners,
+    pub inset: Edges,
     pub background: Hsla,
     pub border_color: Hsla,
     pub text_color: Hsla,
@@ -68,6 +77,7 @@ impl Default for Style {
     fn default() -> Self {
         Self {
             display: Display::Flex,
+            position: Position::default(),
             flex_direction: FlexDirection::Row,
             size: Size {
                 width: f32::MAX,
@@ -82,6 +92,7 @@ impl Default for Style {
             padding: Edges::default(),
             border_widths: Edges::default(),
             corner_radii: Corners::default(),
+            inset: Edges::default(),
             background: Hsla::transparent(),
             border_color: Hsla::transparent(),
             text_color: Hsla {
@@ -103,6 +114,7 @@ impl Default for Style {
 #[derive(Clone, Debug, Default)]
 pub struct StyleRefinement {
     pub display: Option<Display>,
+    pub position: Option<Position>,
     pub flex_direction: Option<FlexDirection>,
     pub size: Option<Size>,
     pub min_size: Option<Size>,
@@ -111,6 +123,7 @@ pub struct StyleRefinement {
     pub padding: Option<Edges>,
     pub border_widths: Option<Edges>,
     pub corner_radii: Option<Corners>,
+    pub inset: Option<Edges>,
     pub background: Option<Hsla>,
     pub border_color: Option<Hsla>,
     pub text_color: Option<Hsla>,
@@ -127,6 +140,9 @@ impl StyleRefinement {
         if let Some(v) = self.display {
             style.display = v;
         }
+        if let Some(v) = self.position {
+            style.position = v;
+        }
         if let Some(v) = self.flex_direction {
             style.flex_direction = v;
         }
@@ -139,35 +155,38 @@ impl StyleRefinement {
         if let Some(v) = &self.max_size {
             style.max_size = *v;
         }
-        if let Some(v) = &self.margin {
-            style.margin = *v;
+        if let Some(v) = self.margin {
+            style.margin = v;
         }
-        if let Some(v) = &self.padding {
-            style.padding = *v;
+        if let Some(v) = self.padding {
+            style.padding = v;
         }
-        if let Some(v) = &self.border_widths {
-            style.border_widths = *v;
+        if let Some(v) = self.border_widths {
+            style.border_widths = v;
         }
-        if let Some(v) = &self.corner_radii {
-            style.corner_radii = *v;
+        if let Some(v) = self.corner_radii {
+            style.corner_radii = v;
         }
-        if let Some(v) = &self.background {
-            style.background = *v;
+        if let Some(v) = self.inset {
+            style.inset = v;
         }
-        if let Some(v) = &self.border_color {
-            style.border_color = *v;
+        if let Some(v) = self.background {
+            style.background = v;
         }
-        if let Some(v) = &self.text_color {
-            style.text_color = *v;
+        if let Some(v) = self.border_color {
+            style.border_color = v;
         }
-        if let Some(v) = &self.font_size {
-            style.font_size = *v;
+        if let Some(v) = self.text_color {
+            style.text_color = v;
         }
-        if let Some(v) = &self.align_items {
-            style.align_items = *v;
+        if let Some(v) = self.font_size {
+            style.font_size = v;
         }
-        if let Some(v) = &self.justify_content {
-            style.justify_content = *v;
+        if let Some(v) = self.align_items {
+            style.align_items = v;
+        }
+        if let Some(v) = self.justify_content {
+            style.justify_content = v;
         }
         style
     }
@@ -193,6 +212,60 @@ pub trait Styled: Sized {
         Self: Sized,
     {
         self.style_refinement().display = Some(Display::None);
+        self
+    }
+
+    // Position
+    fn absolute(mut self) -> Self
+    where
+        Self: Sized,
+    {
+        self.style_refinement().position = Some(Position::Absolute);
+        self
+    }
+
+    // Inset (for absolute positioning)
+    fn top(mut self, top: f32) -> Self
+    where
+        Self: Sized,
+    {
+        let r = self.style_refinement();
+        r.inset = Some(r.inset.map_or(
+            Edges {
+                top,
+                ..Edges::default()
+            },
+            |mut e| {
+                e.top = top;
+                e
+            },
+        ));
+        self
+    }
+
+    fn left(mut self, left: f32) -> Self
+    where
+        Self: Sized,
+    {
+        let r = self.style_refinement();
+        r.inset = Some(r.inset.map_or(
+            Edges {
+                left,
+                ..Edges::default()
+            },
+            |mut e| {
+                e.left = left;
+                e
+            },
+        ));
+        self
+    }
+
+    fn inset(mut self, inset: Edges) -> Self
+    where
+        Self: Sized,
+    {
+        self.style_refinement().inset = Some(inset);
         self
     }
 

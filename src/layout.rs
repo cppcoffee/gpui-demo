@@ -19,7 +19,7 @@ use taffy::{
 };
 
 use crate::geometry::{Bounds, Edges, Point, Size};
-use crate::style::{AlignItems, Display, FlexDirection, JustifyContent, Style};
+use crate::style::{AlignItems, Display, FlexDirection, JustifyContent, Position, Style};
 
 type NodeMeasureFn = Box<dyn FnMut(TaffySize<Option<f32>>, TaffySize<AvailableSpace>) -> Size>;
 
@@ -253,6 +253,8 @@ impl ToTaffy<taffy::style::Style> for Style {
     fn to_taffy(&self) -> taffy::style::Style {
         taffy::style::Style {
             display: self.display.into(),
+            position: self.position.into(),
+            inset: self.inset.to_taffy(),
             size: self.size.to_taffy(),
             min_size: self.min_size.to_taffy(),
             max_size: self.max_size.to_taffy(),
@@ -303,6 +305,15 @@ impl From<Display> for taffy::style::Display {
         match value {
             Display::Flex => Self::Flex,
             Display::None => Self::None,
+        }
+    }
+}
+
+impl From<Position> for taffy::style::Position {
+    fn from(value: Position) -> Self {
+        match value {
+            Position::Relative => Self::Relative,
+            Position::Absolute => Self::Absolute,
         }
     }
 }
