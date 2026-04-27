@@ -2,7 +2,7 @@
 
 A minimal Rust + Metal UI demo inspired by Zed's GPUI architecture.
 
-![GPUI Demo screenshot](assets/gpui-demo-screenshot.svg)
+![demo](./assets/demo.png)
 
 ## Overview
 
@@ -36,6 +36,3 @@ cargo run
 - `scene`, `renderer`, `shaders` - rendering pipeline
 - `metal_view`, `display_link` - macOS window and render loop
 
-## Demo Show
-
-![demo](./assets/demo.png)
