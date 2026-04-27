@@ -35,15 +35,15 @@ pub fn hsla_to_rgba(hsla: Hsla) -> Rgba {
     let x = c * (1.0 - (h % 2.0 - 1.0).abs());
     let m = l - c / 2.0;
 
-    let (r, g, b) = if h >= 0.0 && h < 1.0 {
+    let (r, g, b) = if (0.0..1.0).contains(&h) {
         (c, x, 0.0)
-    } else if h >= 1.0 && h < 2.0 {
+    } else if (1.0..2.0).contains(&h) {
         (x, c, 0.0)
-    } else if h >= 2.0 && h < 3.0 {
+    } else if (2.0..3.0).contains(&h) {
         (0.0, c, x)
-    } else if h >= 3.0 && h < 4.0 {
+    } else if (3.0..4.0).contains(&h) {
         (0.0, x, c)
-    } else if h >= 4.0 && h < 5.0 {
+    } else if (4.0..5.0).contains(&h) {
         (x, 0.0, c)
     } else {
         (c, 0.0, x)

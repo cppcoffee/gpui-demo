@@ -46,20 +46,22 @@ impl Button {
     };
 
     pub fn new(id: ElementId, label: impl Into<String>) -> Self {
-        let mut style = StyleRefinement::default();
-        style.min_size = Some(Size {
-            width: 0.0,
-            height: 34.0,
-        });
-        style.padding = Some(Edges {
-            top: 0.0,
-            right: 18.0,
-            bottom: 0.0,
-            left: 18.0,
-        });
-        style.corner_radii = Some(crate::geometry::Corners::uniform(7.0));
-        style.align_items = Some(AlignItems::Center);
-        style.justify_content = Some(JustifyContent::Center);
+        let style = StyleRefinement {
+            min_size: Some(Size {
+                width: 0.0,
+                height: 34.0,
+            }),
+            padding: Some(Edges {
+                top: 0.0,
+                right: 18.0,
+                bottom: 0.0,
+                left: 18.0,
+            }),
+            corner_radii: Some(crate::geometry::Corners::uniform(7.0)),
+            align_items: Some(AlignItems::Center),
+            justify_content: Some(JustifyContent::Center),
+            ..Default::default()
+        };
 
         Self {
             style,

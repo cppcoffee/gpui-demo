@@ -97,7 +97,7 @@ impl MetalRenderer {
         color_attachment.set_clear_color(MTLClearColor::new(0.11, 0.11, 0.12, 1.0));
         color_attachment.set_store_action(MTLStoreAction::Store);
 
-        let encoder = command_buffer.new_render_command_encoder(&pass_desc);
+        let encoder = command_buffer.new_render_command_encoder(pass_desc);
 
         let viewport = MTLViewport {
             originX: 0.0,

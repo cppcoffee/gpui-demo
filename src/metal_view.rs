@@ -282,9 +282,7 @@ pub fn create_window_and_run(mtm: MainThreadMarker) {
     let _: () = unsafe { msg_send![window, center] };
     let _: () = unsafe { msg_send![window, makeKeyAndOrderFront: std::ptr::null::<AnyObject>()] };
     #[allow(deprecated)]
-    {
-        app.activateIgnoringOtherApps(true)
-    };
+    app.activateIgnoringOtherApps(true);
     unsafe { app.run() };
 }
 

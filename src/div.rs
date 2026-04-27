@@ -64,27 +64,27 @@ impl Div {
     fn resolved_style(&self, interaction: &InteractionState) -> Style {
         let mut style = self.style.resolve();
 
-        if let (Some(hover), Some(id)) = (&self.hover_style, self.element_id) {
-            if interaction.hovered_id == Some(id) {
-                let hover_resolved = hover.resolve();
-                if hover_resolved.background.a > 0.0 {
-                    style.background = hover_resolved.background;
-                }
-                if hover_resolved.border_color.a > 0.0 {
-                    style.border_color = hover_resolved.border_color;
-                }
+        if let (Some(hover), Some(id)) = (&self.hover_style, self.element_id)
+            && interaction.hovered_id == Some(id)
+        {
+            let hover_resolved = hover.resolve();
+            if hover_resolved.background.a > 0.0 {
+                style.background = hover_resolved.background;
+            }
+            if hover_resolved.border_color.a > 0.0 {
+                style.border_color = hover_resolved.border_color;
             }
         }
 
-        if let (Some(active), Some(id)) = (&self.active_style, self.element_id) {
-            if interaction.active_id == Some(id) {
-                let active_resolved = active.resolve();
-                if active_resolved.background.a > 0.0 {
-                    style.background = active_resolved.background;
-                }
-                if active_resolved.border_color.a > 0.0 {
-                    style.border_color = active_resolved.border_color;
-                }
+        if let (Some(active), Some(id)) = (&self.active_style, self.element_id)
+            && interaction.active_id == Some(id)
+        {
+            let active_resolved = active.resolve();
+            if active_resolved.background.a > 0.0 {
+                style.background = active_resolved.background;
+            }
+            if active_resolved.border_color.a > 0.0 {
+                style.border_color = active_resolved.border_color;
             }
         }
 
